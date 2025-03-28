@@ -309,6 +309,63 @@ section {
   background: linear-gradient(90deg, transparent, var(--matrix-green), transparent);
 }
 
+/* Hero Section with small-screen class for responsive layouts */
+.hero.small-screen {
+  height: auto;
+  min-height: 100vh;
+  padding-top: 70px;
+  padding-bottom: 30px;
+  align-items: flex-start;
+}
+
+.hero.small-screen .hero-content {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero.small-screen .profile-container {
+  width: 140px;
+  height: 140px;
+  margin-bottom: 15px;
+}
+
+.hero.small-screen .profile-img img {
+  width: 120px;
+  height: 120px;
+}
+
+.hero.small-screen .profile-img img {
+  height: 120px;
+  width: 120px;
+}
+
+.hero.small-screen .profile-binary {
+  width: 140px;
+  height: 140px;
+}
+
+.hero.small-screen h1 {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+.hero.small-screen h2 {
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+}
+
+.hero.small-screen p {
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+.hero.small-screen .pill-button {
+  padding: 10px 25px;
+  font-size: 1rem;
+}
+
 /* Hero Section */
 .hero {
   height: 100vh;
@@ -325,6 +382,7 @@ section {
   max-width: 800px;
   position: relative;
   z-index: 2;
+  padding-top: 60px; /* Add padding to account for the navigation bar */
 }
 
 .hero h1 {
@@ -1471,6 +1529,11 @@ footer {
   .profile-img {
     width: 160px;
     height: 160px;
+
+    img{
+      height: 160px;
+      width: 160px;
+    }
   }
   
   .profile-binary {
@@ -1499,6 +1562,57 @@ footer {
     width: 100px;
     height: 200px;
     border-radius: 50px;
+  }
+}
+
+/* Media query for shorter screen heights - keep for backward compatibility */
+@media (max-height: 700px) {
+  .hero {
+    height: auto;
+    min-height: 100vh;
+    padding-top: 70px; /* Reduced from 100px to create less empty space */
+    padding-bottom: 50px;
+    align-items: flex-start; /* Align to top on smaller screens */
+  }
+  
+  .hero-content {
+    padding-top: 20px; /* Smaller padding on shorter screens */
+  }
+  
+  .profile-container {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 20px;
+  }
+  
+  .profile-img {
+    width: 120px;
+    height: 120px;
+
+    img {
+      height: 120px;
+      width: 120px;
+    }
+  }
+  
+  .profile-binary {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .hero h1 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .hero h2 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+  }
+  
+  .hero p {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
   }
 }
 
@@ -1629,153 +1743,6 @@ footer {
   border: 1px solid rgba(0, 255, 0, 0.3);
   border-radius: 15px;
   font-size: 0.9rem;
-}
-
-
-
-
-
-
-
-.section-title {
-  font-size: 3rem;
-  text-align: center;
-  margin-bottom: 60px;
-  color: var(--matrix-green);
-  position: relative;
-  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 1s, transform 1s;
-}
-
-.section-title.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--matrix-green), transparent);
-}
-
-/* Skills Section */
-.skills-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 30px;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 1s, transform 1s;
-}
-
-.skills-container.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.skill-category {
-  background-color: rgba(0, 20, 0, 0.5);
-  border: 1px solid rgba(0, 255, 0, 0.2);
-  border-radius: 10px;
-  padding: 30px;
-  transition: transform 0.5s, box-shadow 0.5s;
-  position: relative;
-  overflow: hidden;
-}
-
-.skill-category::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), transparent);
-  opacity: 0;
-  transition: opacity 0.5s;
-}
-
-.skill-category:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 20px rgba(0, 255, 0, 0.3);
-}
-
-.skill-category:hover::before {
-  opacity: 1;
-}
-
-.skill-category h3 {
-  font-size: 1.5rem;
-  color: var(--matrix-green);
-  margin-bottom: 20px;
-  position: relative;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-}
-
-.skill-category h3::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 40px;
-  height: 2px;
-  background-color: var(--matrix-green);
-  box-shadow: 0 0 5px var(--matrix-green);
-}
-
-.skill-item {
-  margin-bottom: 15px;
-}
-
-.skill-name {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-  font-size: 1rem;
-}
-
-.skill-level {
-  color: var(--matrix-light-green);
-}
-
-.skill-progress {
-  height: 6px;
-  background-color: rgba(0, 50, 0, 0.5);
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
-}
-
-.skill-progress-bar {
-  height: 100%;
-  border-radius: 3px;
-  position: relative;
-  width: 0;
-  transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1);
-  background: linear-gradient(90deg, var(--matrix-dark-green), var(--matrix-green));
-}
-
-.skill-progress-bar::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  animation: skillScan 2s linear infinite;
-}
-
-@keyframes skillScan {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
 }
 
 /* Rest of your CSS for other components */

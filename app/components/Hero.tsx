@@ -9,10 +9,25 @@ interface HeroProps {
 
 export default function Hero({ active }: HeroProps) {
   const [binaryCircleContent, setBinaryCircleContent] = useState('');
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   // Function to generate binary circle for profile
   useEffect(() => {
     generateBinaryCircle();
+
+    // Check screen height for responsive adjustments
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerHeight < 700);
+    };
+
+    // Initial check
+    checkScreenSize();
+
+    // Add listener for resize events
+    window.addEventListener('resize', checkScreenSize);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
   // Generate binary circle content
@@ -54,7 +69,7 @@ export default function Hero({ active }: HeroProps) {
   };
 
   return (
-    <section id="home" className={`hero ${active ? 'active' : ''}`}>
+    <section id="home" className={`hero ${active ? 'active' : ''} ${isSmallScreen ? 'small-screen' : ''}`}>
       <div className="digital-bg"></div>
       <div className="hero-content">
         <div className="profile-container">

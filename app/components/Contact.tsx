@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import useScrollAnimations from '../hooks/useScrollAnimations';
 
 interface MessageType {
@@ -274,10 +274,9 @@ export default function Contact() {
                     <input 
                       type="text" 
                       className="terminal-input" 
-                      placeholder={easterEggDiscovered ? "Enter your message..." : "Type a command..."}
+                      placeholder={easterEggDiscovered ? "type it here..." : "type a command..."}
                       id="message-input"
                       ref={messageInputRef}
-                      autoFocus
                       disabled={hackingInProgress}
                     />
                   </div>
