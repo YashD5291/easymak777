@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import useScrollAnimations from '../hooks/useScrollAnimations';
 
 interface MessageType {
-  type: 'system' | 'info' | 'user' | 'response' | 'hack' | 'easter-egg';
+  type: 'system' | 'info' | 'user' | 'response' | 'hack' | 'easter-egg' | 'error';
   text?: string;
   style?: React.CSSProperties;
   html?: string;
@@ -13,11 +13,13 @@ interface MessageType {
 export default function Contact() {
   // State for easter egg discovery
   const [easterEggDiscovered, setEasterEggDiscovered] = useState(false);
+  // State for hacking in progress
+  const [hackingInProgress, setHackingInProgress] = useState(false);
   
   // State for terminal messages
   const [terminalMessages, setTerminalMessages] = useState<MessageType[]>([
     { type: 'system', text: '// Terminal access granted' },
-    { type: 'system', text: '// Type commands or click "Hack Me" to continue...' },
+    { type: 'system', text: '// Type "help" for available commands' },
   ]);
   
   // Ref for input
@@ -26,6 +28,76 @@ export default function Contact() {
   // Initialize scroll animations
   useScrollAnimations();
   
+  // Focus input when component mounts
+  const focusInput = () => {
+    if (messageInputRef.current) {
+      messageInputRef.current.focus();
+    }
+  };
+  
+  // Process command input
+  const processCommand = (command: string) => {
+    if (hackingInProgress) return;
+    
+    const cmd = command.toLowerCase().trim();
+    
+    // Add user command to terminal
+    setTerminalMessages(prev => [
+      ...prev,
+      { type: 'user', text: command }
+    ]);
+    
+    // Process different commands
+    if (cmd === 'help') {
+      setTimeout(() => {
+        setTerminalMessages(prev => [
+          ...prev,
+          { type: 'system', text: 'Available commands:' },
+          { type: 'info', text: 'help: Display this help message' },
+          { type: 'info', text: 'clear: Clear the terminal' },
+          { type: 'info', text: 'access: Attempt to access restricted areas' },
+          { type: 'info', text: 'whoami: Display current user' },
+          { type: 'info', text: 'ls: List directory contents' },
+        ]);
+      }, 300);
+    } else if (cmd === 'clear') {
+      setTerminalMessages([
+        { type: 'system', text: '// Terminal cleared' },
+        { type: 'system', text: '// Type "help" for available commands' },
+      ]);
+    } else if (cmd === 'hack' || cmd === 'access' || cmd === 'sudo hack' || cmd === 'sudo access') {
+      initiateHackSequence();
+    } else if (cmd === 'whoami') {
+      setTimeout(() => {
+        setTerminalMessages(prev => [
+          ...prev,
+          { type: 'response', text: 'guest@terminal' },
+        ]);
+      }, 300);
+    } else if (cmd === 'ls') {
+      setTimeout(() => {
+        setTerminalMessages(prev => [
+          ...prev,
+          { type: 'system', text: 'system/ projects/ about/ security/' },
+        ]);
+      }, 300);
+    } else if (cmd.startsWith('cd ')) {
+      setTimeout(() => {
+        setTerminalMessages(prev => [
+          ...prev,
+          { type: 'system', text: 'Permission denied: Elevated access required' },
+        ]);
+      }, 300);
+    } else {
+      setTimeout(() => {
+        setTerminalMessages(prev => [
+          ...prev,
+          { type: 'error', text: `Command not found: ${command}` },
+        ]);
+      }, 300);
+    }
+  };
+  
   // Handle form submit
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,30 +105,48 @@ export default function Contact() {
     const message = messageInputRef.current?.value.trim();
     if (!message) return;
     
-    // Add user message to terminal
-    setTerminalMessages(prevMessages => [
-      ...prevMessages,
-      { type: 'user', text: message }
-    ]);
+    if (easterEggDiscovered) {
+      // Easter egg discovered, handle as message
+      setTerminalMessages(prevMessages => [
+        ...prevMessages,
+        { type: 'user', text: message }
+      ]);
+      
+      // Add response after a short delay
+      setTimeout(() => {
+        setTerminalMessages(prevMessages => [
+          ...prevMessages,
+          { type: 'response', text: 'Message received! I\'ll get back to you soon.' }
+        ]);
+        
+        // Reset to command mode after sending message
+        setTimeout(() => {
+          setEasterEggDiscovered(false);
+          setTerminalMessages([
+            { type: 'system', text: '// Terminal reset' },
+            { type: 'system', text: '// Type "help" for available commands' },
+          ]);
+        }, 1500);
+      }, 500);
+    } else {
+      // Easter egg not discovered, handle as command
+      processCommand(message);
+    }
     
     // Clear input
     if (messageInputRef.current) {
       messageInputRef.current.value = '';
     }
-    
-    // Add response after a short delay
-    setTimeout(() => {
-      setTerminalMessages(prevMessages => [
-        ...prevMessages,
-        { type: 'response', text: 'Message received! I\'ll get back to you soon.' }
-      ]);
-    }, 500);
   };
   
-  // Handle hack button
-  const handleHack = () => {
-    // Clear terminal messages except form instructions
-    setTerminalMessages([
+  // Handle hack sequence
+  const initiateHackSequence = () => {
+    if (hackingInProgress) return;
+    setHackingInProgress(true);
+    
+    // Clear terminal messages and start hack sequence
+    setTerminalMessages(prev => [
+      ...prev,
       { type: 'hack', text: 'Initiating system hack...' }
     ]);
     
@@ -93,6 +183,7 @@ export default function Contact() {
     
     // After Easter egg is revealed, show contact options
     setTimeout(() => {
+      setHackingInProgress(false);
       if (easterEggDiscovered) return;
       setTerminalMessages(prev => [
         ...prev,
@@ -135,7 +226,7 @@ export default function Contact() {
           </div>
           
           <div className="contact-form">
-            <div className="terminal">
+            <div className="terminal" onClick={focusInput}>
               <div className="terminal-header">
                 <div className="terminal-button red"></div>
                 <div className="terminal-button yellow"></div>
@@ -164,48 +255,33 @@ export default function Contact() {
                       {msg.type === 'info' && <span style={{ color: '#f59e0b' }}>{msg.text?.split(':')[0]}:</span>}
                       {msg.type === 'info' ? msg.text?.split(':').slice(1).join(':') : ''}
                       
-                      {msg.type === 'system' && msg.text}
+                      {msg.type === 'system' && <span style={{ color: '#0f0' }}>{msg.text}</span>}
                       
                       {msg.type === 'user' && (
                         <><span className="terminal-prompt">$</span> {msg.text}</>
                       )}
                       
-                      {msg.type === 'response' && msg.text}
-                      {msg.type === 'hack' && msg.text}
+                      {msg.type === 'response' && <span style={{ color: '#fff' }}>{msg.text}</span>}
+                      {msg.type === 'hack' && <span style={{ color: '#f00' }}>{msg.text}</span>}
+                      {msg.type === 'error' && <span style={{ color: '#f00' }}>{msg.text}</span>}
                     </div>
                   );
                 })}
                 
-                {easterEggDiscovered ? (
-                  <form id="contact-form" onSubmit={handleFormSubmit}>
-                    <div className="terminal-input-line">
-                      <span className="terminal-prompt">$</span>
-                      <input 
-                        type="text" 
-                        className="terminal-input" 
-                        placeholder="Enter your message..." 
-                        id="message-input"
-                        ref={messageInputRef}
-                      />
-                    </div>
-                    
-                    <div style={{ display: 'flex' }}>
-                      <button type="submit" className="terminal-submit">
-                        Send Message
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                    <button 
-                      type="button" 
-                      className="hack-btn" 
-                      onClick={handleHack}
-                    >
-                      Hack Me
-                    </button>
+                <form id="contact-form" onSubmit={handleFormSubmit}>
+                  <div className="terminal-input-line">
+                    <span className="terminal-prompt">$</span>
+                    <input 
+                      type="text" 
+                      className="terminal-input" 
+                      placeholder={easterEggDiscovered ? "Enter your message..." : "Type a command..."}
+                      id="message-input"
+                      ref={messageInputRef}
+                      autoFocus
+                      disabled={hackingInProgress}
+                    />
                   </div>
-                )}
+                </form>
               </div>
             </div>
           </div>
