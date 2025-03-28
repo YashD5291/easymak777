@@ -10,7 +10,7 @@ interface MatrixRainProps {
 
 const MatrixRain: React.FC<MatrixRainProps> = ({ 
   density = 0.05, 
-  speed = 1, 
+  speed = 0.05, 
   fontSize = 14 
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -79,7 +79,7 @@ const MatrixRain: React.FC<MatrixRainProps> = ({
         }
         
         // Move drop down
-        drops[i]++;
+        drops[i] += speed * 0.05;
       }
     };
 
