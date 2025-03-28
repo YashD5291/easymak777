@@ -56,11 +56,24 @@ export default function MatrixEntry({ onFinishSequence }: { onFinishSequence: ()
         const message = messages[index];
         const baseDelay = 100; // ms per character
 
-        // Type each character with delay
+        // Type each character with random delay variations
         setActiveMessageText('');
         for (let i = 0; i < message.text.length; i++) {
+            // Add randomness to typing speed (between 0.7x and 1.5x)
+            const randomFactor = 0.7 + Math.random() * 0.8;
+            const typingDelay = Math.floor(baseDelay * randomFactor);
+            
+            // Add occasional longer pauses (15% chance)
+            const shouldPause = Math.random() < 0.15;
+            const pauseDuration = shouldPause ? 300 + Math.random() * 400 : 0;
+            
             setActiveMessageText(message.text.substring(0, i + 1));
-            await sleep(baseDelay);
+            await sleep(typingDelay);
+            
+            // Add the pause after typing a character if needed
+            if (pauseDuration > 0) {
+                await sleep(pauseDuration);
+            }
         }
 
         // Mark this message as completed
@@ -81,8 +94,12 @@ export default function MatrixEntry({ onFinishSequence }: { onFinishSequence: ()
         const baseDelay = 70; // ms per character
 
         for (let i = 0; i < text.length; i++) {
+            // Add slight randomness to terminal typing too
+            const randomFactor = 0.8 + Math.random() * 0.5;
+            const typingDelay = Math.floor(baseDelay * randomFactor);
+            
             setTerminalText(prev => prev + text.charAt(i));
-            await sleep(baseDelay);
+            await sleep(typingDelay);
         }
 
         // Final delay before transitioning to pill choice
